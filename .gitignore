@@ -73,3 +73,9 @@ tests/
 # TacSL sensor
 **/tactile_record/*
 **/gelsight_r15_data/*
+
+# Claude Code
+.claude/
+CLAUDE.md
+CLAUDE_*.md
+CLI.txt
