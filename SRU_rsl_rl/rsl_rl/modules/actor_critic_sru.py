@@ -65,6 +65,8 @@ class ActorCriticSRU(nn.Module):
         num_cameras: int = 1,
         **kwargs,
     ):
+        if "rnn_hidden_dim" in kwargs:
+            rnn_hidden_size = kwargs.pop("rnn_hidden_dim")
         if kwargs:
             print(f"[ActorCriticSRU] Warning: got unexpected arguments, which will be ignored: {list(kwargs.keys())}")
         if rnn_type != "lstm_sru":
@@ -80,6 +82,9 @@ class ActorCriticSRU(nn.Module):
         self.image_input_dims = image_input_dims
         self.height_input_dims = height_input_dims
         self.num_cameras = num_cameras
+        self.rnn_type = "lstm_sru"
+        self.rnn_hidden_size = rnn_hidden_size
+        self.rnn_num_layers = rnn_num_layers
 
         # Compute the total number of features from image and height inputs.
         self.num_image_features = image_input_dims[0] * image_input_dims[1] * image_input_dims[2]

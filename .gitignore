@@ -78,3 +78,5 @@ tests/
 .claude/
 CLAUDE.md
 CLAUDE_*.md
+memory/
+test/

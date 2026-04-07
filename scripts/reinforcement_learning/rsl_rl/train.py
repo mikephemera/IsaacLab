@@ -58,20 +58,18 @@ import platform
 
 from packaging import version
 
-# check minimum supported rsl-rl version
-RSL_RL_VERSION = "3.0.1"
-installed_version = metadata.version("rsl-rl-lib")
-if version.parse(installed_version) < version.parse(RSL_RL_VERSION):
-    if platform.system() == "Windows":
-        cmd = [r".\isaaclab.bat", "-p", "-m", "pip", "install", f"rsl-rl-lib=={RSL_RL_VERSION}"]
-    else:
-        cmd = ["./isaaclab.sh", "-p", "-m", "pip", "install", f"rsl-rl-lib=={RSL_RL_VERSION}"]
-    print(
-        f"Please install the correct version of RSL-RL.\nExisting version is: '{installed_version}'"
-        f" and required version is: '{RSL_RL_VERSION}'.\nTo install the correct version, run:"
-        f"\n\n\t{' '.join(cmd)}\n"
-    )
-    exit(1)
+# check minimum supported rsl-rl version (skipped for SRU version)
+# SRU_rsl_rl uses package name 'rsl_rl' instead of 'rsl-rl-lib'
+try:
+    installed_version = metadata.version("rsl_rl")
+    print(f"Using SRU_rsl_rl version: {installed_version}")
+except metadata.PackageNotFoundError:
+    try:
+        installed_version = metadata.version("rsl-rl-lib")
+        print(f"Using rsl-rl-lib version: {installed_version}")
+    except metadata.PackageNotFoundError:
+        print("WARNING: Could not find rsl_rl or rsl-rl-lib package metadata")
+        installed_version = "2.0.1"  # SRU version fallback
 
 """Rest everything follows."""
 
@@ -82,7 +80,11 @@ from datetime import datetime
 
 import gymnasium as gym
 import torch
-from rsl_rl.runners import DistillationRunner, OnPolicyRunner
+from rsl_rl.runners import OnPolicyRunner
+try:
+    from rsl_rl.runners import DistillationRunner
+except ImportError:
+    DistillationRunner = None
 
 from isaaclab.envs import (
     DirectMARLEnv,

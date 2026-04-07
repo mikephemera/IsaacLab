@@ -50,6 +50,8 @@ class ActorCriticRecurrent(ActorCritic):
         init_noise_std=1.0,
         **kwargs,
     ):
+        if "rnn_hidden_dim" in kwargs:
+            rnn_hidden_size = kwargs.pop("rnn_hidden_dim")
         if kwargs:
             print(
                 "ActorCriticRecurrent.__init__ got unexpected arguments, which will be ignored: " + str(kwargs.keys()),
@@ -66,6 +68,10 @@ class ActorCriticRecurrent(ActorCritic):
         )
 
         activation = get_activation(activation)
+
+        self.rnn_type = rnn_type
+        self.rnn_hidden_size = rnn_hidden_size
+        self.rnn_num_layers = rnn_num_layers
 
         self.linear_dropout_actor = LinearConstDropout(
             in_features=rnn_hidden_size,
